@@ -21,7 +21,9 @@ export default function Enquiry() {
     const formData = new FormData(form);
 
     // Honeypot: silently accept bot submissions without sending anything.
-    if ((formData.get('company') as string)?.trim()) {
+    // `botcheck` is Web3Forms' native honeypot name, so it is also rejected
+    // server-side and is stripped from the notification email.
+    if ((formData.get('botcheck') as string)?.trim()) {
       setSent(true);
       form.reset();
       return;
@@ -38,6 +40,14 @@ export default function Enquiry() {
 
     const name = ((formData.get('name') as string) || '').trim();
     const email = ((formData.get('email') as string) || '').trim();
+
+    // Optional fields: send a readable placeholder rather than an empty row,
+    // so the notification email never shows a blank value to the client.
+    for (const field of ['phone', 'service', 'message'] as const) {
+      if (!((formData.get(field) as string) || '').trim()) {
+        formData.set(field, 'Not provided');
+      }
+    }
 
     formData.append('access_key', ACCESS_KEY);
     formData.append('subject', `New website enquiry from ${name || 'the website'}`);
@@ -99,7 +109,14 @@ export default function Enquiry() {
           </div>
 
           <form className="enquiry-form" onSubmit={onSubmit}>
-            <input type="text" name="company" tabIndex={-1} autoComplete="off" className="enq-honeypot" />
+            <input
+              type="checkbox"
+              name="botcheck"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="enq-honeypot"
+            />
             <div className="enq-row">
               <div className="enq-field">
                 <label className="enq-label" htmlFor="enq-name">Full Name</label>
