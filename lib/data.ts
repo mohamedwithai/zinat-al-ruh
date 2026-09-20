@@ -44,8 +44,8 @@ export const SITE_SLIDES: Slide[] = [
   { src: '/assets/site/05-living-handover.jpg', label: 'Formal Living · Handover',     meta: 'COMPLETED SITE · DUBAI' },
   { src: '/assets/site/06-dining-handover.jpg', label: 'Dining Lounge · Pre-Handover', meta: 'COMPLETED SITE · DUBAI' },
   { src: '/assets/site/02-master-bedroom.jpg',  label: 'Master Bedroom · Furnished',   meta: 'RESIDENTIAL FIT-OUT' },
-  { src: '/assets/site/03-living-tv.png',       label: 'Living Room · Joinery',        meta: 'RESIDENTIAL FIT-OUT' },
-  { src: '/assets/site/01-bedroom-wardrobe.png',label: 'Bedroom · Custom Wardrobe',    meta: 'RESIDENTIAL FIT-OUT' },
+  { src: '/assets/site/03-living-tv.jpg',       label: 'Living Room · Joinery',        meta: 'RESIDENTIAL FIT-OUT' },
+  { src: '/assets/site/01-bedroom-wardrobe.jpg',label: 'Bedroom · Custom Wardrobe',    meta: 'RESIDENTIAL FIT-OUT' },
   { src: '/assets/site/04-kitchen-units.jpg',   label: 'Kitchen · Cabinetry',          meta: 'RESIDENTIAL FIT-OUT' },
 ];
 

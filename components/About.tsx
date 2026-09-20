@@ -89,7 +89,7 @@ export default function About() {
             <article className="team-card team-card-wide">
               <div className="team-photo">
                 <Image
-                  src="/assets/team/ameer-ali.png"
+                  src="/assets/team/ameer-ali.jpg"
                   alt="Ameer Ali, Operations Manager at Zinat Al Ruh Technical Services"
                   fill
                   sizes="(max-width: 768px) 100vw, 320px"
