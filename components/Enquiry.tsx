@@ -8,7 +8,13 @@ import { Reveal } from './Reveal';
 // shared in client-side code), so the form posts from the browser and the
 // site stays a pure static export — no server route, no secrets to manage.
 const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
-const ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+// This key is safe to commit: Web3Forms access keys are public by design and
+// are meant to be embedded in client-side code. It identifies the form, not
+// the account, and cannot be used to read submissions or change settings.
+// Hardcoded deliberately: a build-time env var made the form fail silently
+// whenever a host was misconfigured, which is the wrong failure mode for a
+// site handed over without ongoing maintenance.
+const ACCESS_KEY = '73202b51-942b-406b-9cae-2d567c110883';
 
 export default function Enquiry() {
   const [sent, setSent] = useState(false);
@@ -26,11 +32,6 @@ export default function Enquiry() {
     if ((formData.get('botcheck') as string)?.trim()) {
       setSent(true);
       form.reset();
-      return;
-    }
-
-    if (!ACCESS_KEY) {
-      setError('Email delivery is not configured yet. Please try again later.');
       return;
     }
 
