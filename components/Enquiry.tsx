@@ -3,6 +3,13 @@
 import { useState } from 'react';
 import { Reveal } from './Reveal';
 
+// Web3Forms delivers straight to the mailbox registered against this key.
+// The access key is public by design (Web3Forms documents that it may be
+// shared in client-side code), so the form posts from the browser and the
+// site stays a pure static export — no server route, no secrets to manage.
+const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit';
+const ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+
 export default function Enquiry() {
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
@@ -13,21 +20,42 @@ export default function Enquiry() {
     const form = e.currentTarget;
     const formData = new FormData(form);
 
+    // Honeypot: silently accept bot submissions without sending anything.
+    if ((formData.get('company') as string)?.trim()) {
+      setSent(true);
+      form.reset();
+      return;
+    }
+
+    if (!ACCESS_KEY) {
+      setError('Email delivery is not configured yet. Please try again later.');
+      return;
+    }
+
     setSending(true);
     setSent(false);
     setError('');
 
+    const name = ((formData.get('name') as string) || '').trim();
+    const email = ((formData.get('email') as string) || '').trim();
+
+    formData.append('access_key', ACCESS_KEY);
+    formData.append('subject', `New website enquiry from ${name || 'the website'}`);
+    formData.append('from_name', 'Zinat Al Ruh Website');
+    formData.append('replyto', email);
+
     try {
-      const response = await fetch('/api/enquiry', {
+      const response = await fetch(WEB3FORMS_ENDPOINT, {
         method: 'POST',
+        headers: { Accept: 'application/json' },
         body: formData,
       });
       const contentType = response.headers.get('content-type') || '';
       const result = contentType.includes('application/json')
-        ? ((await response.json()) as { message?: string })
-        : { message: 'The enquiry email endpoint is not available on this deployment.' };
+        ? ((await response.json()) as { success?: boolean; message?: string })
+        : { success: false, message: 'Unable to send your enquiry right now.' };
 
-      if (!response.ok) {
+      if (!response.ok || !result.success) {
         throw new Error(result.message || 'Unable to send your enquiry right now.');
       }
 
